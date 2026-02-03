@@ -8,8 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var authViewModel: AuthViewModel = AuthViewModel()
+    @State private var isLogin: Bool = true
+
     var body: some View {
-        LoginView()
+        Group {
+            if authViewModel.isAuthenticated {
+                // Show Home when authenticated
+                HomeView(viewModel: authViewModel)
+            } else if isLogin {
+                // Show Login screen
+                LoginView(
+                    signupAction: {
+                        isLogin = false
+                    }
+                )
+                .environmentObject(authViewModel)
+            } else {
+                // Show Signup screen
+                SignupView(
+                    loginAction: {
+                        isLogin = true
+                    }
+                )
+                .environmentObject(authViewModel)
+            }
+        }
+        .task {
+            await authViewModel.getInitialSession()
+        }
     }
 }
 
