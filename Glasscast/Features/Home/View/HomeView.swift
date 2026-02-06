@@ -9,54 +9,63 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var viewModel: AuthViewModel
-
+    
     var body: some View {
         ZStack {
             Color(UIColor(hex: "#122035"))
                 .ignoresSafeArea()
-
-            VStack(spacing: 30) {
-                VStack {
-                    Image(systemName: "cloud.fill")
+            VStack(){
+                HStack{
+                    Image(systemName: "location.fill")
                         .resizable()
-                        .foregroundStyle(.white)
-                        .frame(width: 60, height: 60)
-                        .padding(30)
-                }
-                .glassEffect(.clear, in: .rect(cornerRadius: 20))
-
-                Text("Welcome to Glasscast")
-                    .font(.system(size: 28, weight: .bold, design: .monospaced))
-                    .foregroundStyle(.white)
-
-                Text("Forecast your world with clarity")
-                    .font(.system(size: 14, weight: .ultraLight, design: .monospaced))
-                    .foregroundStyle(.white)
-
-                Spacer()
-
-                // Sign Out Button
-                Button {
-                    Task {
-                        await viewModel.signOut()
-                    }
-                } label: {
-                    HStack {
-                        Text("Sign Out")
-                            .foregroundStyle(.white)
-                        Image(systemName: "arrow.right.circle")
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.white)
+                        .padding()
+                        .glassEffect()
+                    Spacer()
+                    VStack(spacing: 4) {
+                        Text("San Francisco")
+                            .font(.title3.bold())
                             .foregroundColor(.white)
+                        
+                        Text("UPDATED JUST NOW",)
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.6))
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red.opacity(0.6))
-                    .cornerRadius(8)
-                    .glassEffect(.clear, in: .rect(cornerRadius: 8))
+                    Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.bottom, 40)
+                Spacer()
+                ScrollView{
+                    VStack{
+                        VStack{
+                            Image(systemName: "cloud.fill")
+                                .renderingMode(.original)
+                                .resizable()
+                                .frame(width: 120, height: 120)
+                                .foregroundStyle(.white)
+                            
+                            Text("68°")
+                                .font(.system(size: 96, weight: .ultraLight))
+                                .foregroundColor(.white)
+                            
+                            Text("Partly Cloudy")
+                                .font(.title3)
+                                .foregroundColor(.white.opacity(0.9))
+                            
+                            HStack(spacing: 12) {
+                                Text("H: 72°")
+                                Text("L: 54°")
+                            }
+                            .font(.title3)
+                            .foregroundColor(.white.opacity(0.7))
+                            .padding(.top, 8)
+                        }
+                    }
+                }
             }
-            .padding()
+            .padding(.top, 20)
+            
         }
     }
 }
