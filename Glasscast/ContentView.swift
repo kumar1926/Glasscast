@@ -14,8 +14,8 @@ struct ContentView: View {
     var body: some View {
         Group {
             if authViewModel.isAuthenticated {
-                // Show Home when authenticated
-                HomeView(viewModel: authViewModel)
+                // Show MainTabView when authenticated
+                MainTabView(authViewModel: authViewModel)
             } else if isLogin {
                 // Show Login screen
                 LoginView(
