@@ -11,8 +11,6 @@ import Foundation
 
 @MainActor
 class HomeViewModel: ObservableObject {
-    // MARK: - Published Properties
-
     @Published var currentWeather: CurrentWeather?
     @Published var dailyForecast: [DailyForecast] = []
     @Published var locationName: String = "Loading..."
@@ -20,20 +18,14 @@ class HomeViewModel: ObservableObject {
     @Published var error: String?
     @Published var lastUpdated: Date?
 
-    // MARK: - Dependencies
-
     private let locationManager = LocationManager()
     private let weatherService = WeatherService()
     private var cancellables = Set<AnyCancellable>()
     private var currentCity: City?
 
-    // MARK: - Initialization
-
     init() {
         setupLocationObserver()
     }
-
-    // MARK: - Public Methods
 
     func startFetchingWeather() {
         homeLog("Starting weather fetch...")
@@ -53,7 +45,6 @@ class HomeViewModel: ObservableObject {
 
     func refreshAsync() async {
         refresh()
-        // Wait for loading to complete
         while isLoading {
             try? await Task.sleep(nanoseconds: 100_000_000)
         }
@@ -71,10 +62,7 @@ class HomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Private Methods
-
     private func setupLocationObserver() {
-        // Observe location changes
         locationManager.$location
             .compactMap { $0 }
             .sink { [weak self] location in
@@ -88,7 +76,6 @@ class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Observe location name changes (only when not using selected city)
         locationManager.$locationName
             .sink { [weak self] name in
                 if self?.currentCity == nil {
@@ -97,7 +84,6 @@ class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Observe location errors
         locationManager.$error
             .compactMap { $0?.localizedDescription }
             .sink { [weak self] errorMessage in
@@ -130,8 +116,6 @@ class HomeViewModel: ObservableObject {
     private func homeLog(_ message: String) {
         print("🏠 HomeViewModel → \(message)")
     }
-
-    // MARK: - Computed Display Properties
 
     var temperatureDisplay: String {
         guard let current = currentWeather else { return "--°" }
@@ -168,8 +152,8 @@ class HomeViewModel: ObservableObject {
 
     var lastUpdatedDisplay: String {
         guard let date = lastUpdated else { return "" }
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return "Updated \(formatter.localizedString(for: date, relativeTo: Date()))"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        return "Updated at \(formatter.string(from: date))"
     }
 }

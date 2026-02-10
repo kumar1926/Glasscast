@@ -12,13 +12,10 @@ import Supabase
 
 @MainActor
 class SettingsViewModel: ObservableObject {
-    // MARK: - Published Properties
 
     @AppStorage("useCelsius") var useCelsius: Bool = false
     @Published var isSigningOut: Bool = false
     @Published var error: String?
-
-    // MARK: - Public Methods
 
     func signOut() async {
         settingsLog("Signing out...")

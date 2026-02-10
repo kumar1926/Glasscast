@@ -29,10 +29,15 @@ struct SearchView: View {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.white.opacity(0.6))
 
-                    TextField("Search for a city...", text: $viewModel.searchQuery)
-                        .textFieldStyle(.plain)
-                        .foregroundColor(.white)
-                        .autocorrectionDisabled()
+                    TextField(
+                        "",
+                        text: $viewModel.searchQuery,
+                        prompt: Text("Search for a city...")
+                            .foregroundColor(.white.opacity(0.5))
+                    )
+                    .textFieldStyle(.plain)
+                    .foregroundColor(.white)
+                    .autocorrectionDisabled()
 
                     if !viewModel.searchQuery.isEmpty {
                         Button {

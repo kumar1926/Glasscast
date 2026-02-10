@@ -11,7 +11,6 @@ import Supabase
 
 @MainActor
 class SearchViewModel: ObservableObject {
-    // MARK: - Published Properties
 
     @Published var searchQuery: String = ""
     @Published var searchResults: [City] = []
@@ -20,20 +19,14 @@ class SearchViewModel: ObservableObject {
     @Published var isLoadingFavorites: Bool = false
     @Published var error: String?
 
-    // MARK: - Private Properties
-
     private let apiKey = "24ba8ea1b25cd53a7c5fcbf4f806a845"
     private let geocodingURL = "https://api.openweathermap.org/geo/1.0/direct"
     private var searchTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Initialization
-
     init() {
         setupSearchDebounce()
     }
-
-    // MARK: - Public Methods
 
     func loadFavorites() async {
         searchLog("Loading favorites...")
@@ -64,7 +57,7 @@ class SearchViewModel: ObservableObject {
         isLoadingFavorites = false
     }
 
-    func    addFavorite(_ city: City) async {
+    func addFavorite(_ city: City) async {
         searchLog("Adding favorite: \(city.name)")
 
         do {
@@ -103,7 +96,11 @@ class SearchViewModel: ObservableObject {
                 .eq("lon", value: city.lon)
                 .execute()
 
-            favoriteCities.removeAll { $0.id == city.id }
+            favoriteCities.removeAll {
+                $0.name.lowercased() == city.name.lowercased()
+                    && abs($0.lat - city.lat) < 0.01
+                    && abs($0.lon - city.lon) < 0.01
+            }
             searchLog("Favorite removed successfully")
         } catch {
             searchLog("Failed to remove favorite: \(error.localizedDescription)")
@@ -112,15 +109,17 @@ class SearchViewModel: ObservableObject {
     }
 
     func isFavorite(_ city: City) -> Bool {
-        favoriteCities.contains { $0.id == city.id }
+        favoriteCities.contains {
+            $0.name.lowercased() == city.name.lowercased()
+                && abs($0.lat - city.lat) < 0.01
+                && abs($0.lon - city.lon) < 0.01
+        }
     }
 
     func clearSearch() {
         searchQuery = ""
         searchResults = []
     }
-
-    // MARK: - Private Methods
 
     private func setupSearchDebounce() {
         $searchQuery

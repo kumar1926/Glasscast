@@ -80,7 +80,7 @@ struct HomeView: View {
                             Image(systemName: viewModel.weatherIcon)
                                 .renderingMode(.original)
                                 .resizable()
-                                .frame(width: 120, height: 120)
+                                .frame(width: 100, height: 100)
                                 .foregroundStyle(.white)
 
                             Text(temperatureString(viewModel.currentWeather?.temp))
@@ -219,7 +219,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Helper Methods
 
     private func temperatureString(_ kelvin: Double?) -> String {
         guard let kelvin = kelvin else { return "--°" }
